@@ -1,0 +1,104 @@
+{{template "_header" . }}
+<link rel="stylesheet" type="text/css" href="/static/webupload/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/webupload/style.css">
+<style>
+    .file-item{float: left; position: relative; width: 110px;height: 110px; margin: 0 20px 20px 0; padding: 4px;}
+    .file-item .info{overflow: hidden;}
+    .uploader-list{width: 100%; overflow: hidden;}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>修改用户</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" name="edit" id="edit" method="post" action="edit">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">用户名：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="user_name" type="text" class="form-control" name="user_name" placeholder="输入用户名" value="{{.data.UserName}}">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">头像：</label>
+                            <div class="input-group col-sm-4">
+                                <input type="hidden" id="data_photo" name="avatar" value="{{.data.Avatar}}">
+                                <div id="fileList" class="uploader-list" style="float:right"></div>
+                                <div id="imgPicker" style="float:left">选择图片</div>
+                                <img id="img_data" height="100px" style="float:left;margin-left: 50px;margin-top: -10px;" src="{{.data.Avatar}}"/>
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">密码：</label>
+                            <div class="input-group col-sm-4">
+                                <input type="password" name="password" id="password" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">确认密码：</label>
+                            <div class="input-group col-sm-4">
+                                <input type="password" name="password_confirm" id="password_confirm" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <input type="hidden" name="id" value="{{.data.ID}}">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">状态：</label>
+                            <div class="col-sm-6">
+                                <div class="radio i-checks">
+                                    <input type="radio" name='status' value="1" {{if eq 1 .data.Status   }}checked="checked" {{end}} />开启
+                                    <input type="radio" name='status' value="2" {{if eq 2 .data.Status   }}checked="checked" {{end}}/>关闭
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" id="save_button"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "_footer" . }}
+
+<script type="text/javascript">
+    wp_upload_img($('#fileList'),"/api/common/upload",'#imgPicker',"#data_photo","#img_data");
+
+    $("#save_button").click(function () {
+        common.saveForm("/api/user/edit", "edit")
+    })
+</script>
+</body>
+</html>

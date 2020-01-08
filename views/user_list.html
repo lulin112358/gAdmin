@@ -1,0 +1,80 @@
+{{template "_header" . }}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- Panel Other -->
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>用户列表</h5>
+        </div>
+        <div class="ibox-content">
+            <!--搜索框开始-->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div  class="col-sm-2" style="width: 100px">
+                        <div class="input-group" >
+                            <a href="/api/user/registerpage"><button class="btn btn-outline btn-primary" type="button">添加用户</button></a>
+                        </div>
+                    </div>
+                    <form name="admin_list_sea" class="form-search" method="post" action="">
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" id="key" class="form-control" name="key" value="" placeholder="输入需查询的用户名称" />
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="common.getList('/api/user/list', {key: $('#key').val()})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--搜索框结束-->
+            <div class="hr-line-dashed"></div>
+            <div class="example-wrap">
+                <div class="example">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="long-tr">
+                            <th width="3%">ID</th>
+                            <th width="15%">用户名</th>
+                            <th width="15%">头像</th>
+                            <th width="15%">状态</th>
+                            <th width="10%">创建时间</th>
+                            <th width="10%">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="view"></tbody>
+                    </table>
+
+                    <script id="tpl" type="text/html">
+                        {%# layui.each(d.items, function(index, item) { %}
+                        <tr class="long-td">
+                            <td>{%item.id%}</td>
+                            <td>{%item.user_name%}</td>
+                            <td><img src="{%item.avatar%}" alt="" style="width: 80px;height: 80px;"></td>
+                            <td>{%item.status==1?"开启":"关闭"%}</td>
+                            <td>{%item.created_at%}</td>
+                            <td>
+                                <a href="/api/user/editpage/{%item.id%}" class="btn btn-primary btn-xs btn-outline">
+                                    <i class="fa fa-paste"></i>编辑</a>&nbsp;&nbsp;
+                                <a href="javascript:;" onclick="common.del('/api/user/del', {%item.id%})" class="btn btn-danger btn-xs btn-outline">
+                                    <i class="fa fa-trash-o"></i>删除</a>
+                            </td>
+                        </tr>
+                        {%#  }); %}
+                    </script>
+
+                    <!--<div id="AjaxPage" style="text-align:right;"></div>-->
+                    <div style="text-align: right;">
+                       <span id="AjaxPage"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "_footer" . }}
+<script type="text/javascript">
+    common.getList("/api/user/list")
+</script>
+</body>
+</html>
