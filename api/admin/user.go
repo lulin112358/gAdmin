@@ -1,8 +1,8 @@
-package api
+package admin
 
 import (
 	"awesomeProject/serializer"
-	service2 "awesomeProject/service"
+	"awesomeProject/service/admin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 // 用户注册
 func Register(c *gin.Context) {
-	var service service2.UserRegister
+	var service admin.UserRegister
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.Register()
 		c.JSON(http.StatusOK, res)
@@ -35,7 +35,7 @@ func RenderLogin(c *gin.Context) {
 
 // 用户登陆
 func Login(c *gin.Context) {
-	var service service2.UserLogin
+	var service admin.UserLogin
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.Login(c)
 		c.JSON(http.StatusOK, res)
@@ -71,7 +71,7 @@ func RenderUserList(c *gin.Context) {
 
 // 获取用户列表数据
 func GetUserList(c *gin.Context) {
-	var service service2.UserList
+	var service admin.UserList
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.GetUserList()
 		c.JSON(http.StatusOK, res)
@@ -91,7 +91,7 @@ func RenderUserAdd(c *gin.Context) {
 // 渲染用户修改
 func RenderUserEdit(c *gin.Context) {
 	id := c.Param("id")
-	data := service2.GetUserInfo(id)
+	data := admin.GetUserInfo(id)
 	c.HTML(http.StatusOK, "user_edit.html", gin.H{
 		"data": data.Data,
 	})
@@ -99,7 +99,7 @@ func RenderUserEdit(c *gin.Context) {
 
 // 用户修改
 func UserEdit(c *gin.Context) {
-	var service service2.UserEdit
+	var service admin.UserEdit
 	if err := c.ShouldBind(&service); err != nil {
 		c.JSON(http.StatusOK, serializer.Response{
 			Code: 0,
@@ -113,7 +113,7 @@ func UserEdit(c *gin.Context) {
 
 // 删除用户
 func UserDel(c *gin.Context) {
-	var service service2.UserDel
+	var service admin.UserDel
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.UserDel()
 		c.JSON(http.StatusOK, res)

@@ -1,4 +1,4 @@
-{{template "_header" . }}
+{{template "admin/_header" . }}
 <body class="gray-bg">
 <div class="wrapper wrapper-content animated fadeInRight">
     <!-- Panel Other -->
@@ -12,7 +12,7 @@
                 <div class="col-sm-12">
                     <div  class="col-sm-2" style="width: 100px">
                         <div class="input-group" >
-                            <a href="/api/user/registerpage"><button class="btn btn-outline btn-primary" type="button">添加用户</button></a>
+                            <a href="/admin/user/registerpage"><button class="btn btn-outline btn-primary" type="button">添加用户</button></a>
                         </div>
                     </div>
                     <form name="admin_list_sea" class="form-search" method="post" action="">
@@ -20,7 +20,7 @@
                             <div class="input-group">
                                 <input type="text" id="key" class="form-control" name="key" value="" placeholder="输入需查询的用户名称" />
                                 <span class="input-group-btn">
-                                    <button type="button" onclick="common.getList('/api/user/list', {key: $('#key').val()})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                    <button type="button" onclick="common.getList('/admin/user/list', {key: $('#key').val()})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                 </span>
                             </div>
                         </div>
@@ -54,9 +54,9 @@
                             <td>{%item.status==1?"开启":"关闭"%}</td>
                             <td>{%item.created_at%}</td>
                             <td>
-                                <a href="/api/user/editpage/{%item.id%}" class="btn btn-primary btn-xs btn-outline">
+                                <a href="/admin/user/editpage/{%item.id%}" class="btn btn-primary btn-xs btn-outline">
                                     <i class="fa fa-paste"></i>编辑</a>&nbsp;&nbsp;
-                                <a href="javascript:;" onclick="common.del('/api/user/del', {%item.id%})" class="btn btn-danger btn-xs btn-outline">
+                                <a href="javascript:;" onclick="common.del('/admin/user/del', {%item.id%})" class="btn btn-danger btn-xs btn-outline">
                                     <i class="fa fa-trash-o"></i>删除</a>
                             </td>
                         </tr>
@@ -72,9 +72,9 @@
         </div>
     </div>
 </div>
-{{template "_footer" . }}
+{{template "admin/_footer" . }}
 <script type="text/javascript">
-    common.getList("/api/user/list")
+    common.getList("/admin/user/list")
 </script>
 </body>
 </html>

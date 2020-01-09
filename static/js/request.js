@@ -118,8 +118,35 @@ var common = {
         })
     },
 
+    getListNoPage (url, params = {}) {
+        layui.use(['laytpl'], function () {
+            var laytpl = layui.laytpl
 
-    saveForm(url, elem) {
+            laytpl.config({
+                open: '{%',
+                close: '%}'
+            })
+
+            $.ajax({
+                url: url,
+                method: "get",
+                data: params,
+                dataType: "json",
+                success(res) {
+                    var data = res.data
+                    var getTpl = tpl.innerHTML
+                        ,view = document.getElementById('view');
+                    laytpl(getTpl).render(data, function(html){
+                        view.innerHTML = html;
+                    });
+                }
+            })
+        })
+    },
+
+
+    saveForm(url, elem, is_redirect = true) {
+        console.log(is_redirect)
         var data = $(`#${elem}`).serialize()
         common.post(url, data).then(res => {
             layui.use(['layer'], function () {
@@ -128,9 +155,11 @@ var common = {
                     layer.msg(res.msg, {
                         icon: 6,
                     })
-                    setTimeout(function () {
-                        window.history.go(-1)
-                    }, 1500)
+                    if(is_redirect) {
+                        setTimeout(function () {
+                            window.history.go(-1)
+                        }, 1500)
+                    }
                 }else {
                     layer.msg(res.msg, {
                         icon: 5,

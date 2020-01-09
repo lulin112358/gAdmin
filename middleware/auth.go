@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"awesomeProject/model"
+	"awesomeProject/model/admin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +13,7 @@ func CurrentUser() gin.HandlerFunc {
 		uid := session.Get("user_id")
 		if uid != nil {
 			// 获取用户信息
-			user, err := model.GetUser(uid)
+			user, err := admin.GetUser(uid)
 			if err == nil {
 				c.Set("user", &user)
 			}
@@ -25,13 +25,13 @@ func CurrentUser() gin.HandlerFunc {
 // 验证登陆
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if user, _ := c.Get("user"); user != nil{
-			if _, ok := user.(*model.User); ok {
+		if user, _ := c.Get("user"); user != nil {
+			if _, ok := user.(*admin.User); ok {
 				c.Next()
 				return
 			}
 		}
-		c.Redirect(302, "/api/user/login")
+		c.Redirect(302, "/admin/user/login")
 		c.Abort()
 	}
 }

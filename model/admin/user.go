@@ -1,6 +1,9 @@
-package model
+package admin
 
-import "github.com/jinzhu/gorm"
+import (
+	"awesomeProject/model"
+	"github.com/jinzhu/gorm"
+)
 
 // 用户表定义
 type User struct {
@@ -14,6 +17,6 @@ type User struct {
 // 获取用户信息
 func GetUser(uid interface{}) (User, error) {
 	var user User
-	result := DB.First(&user, uid)
+	result := model.DB.First(&user, uid)
 	return user, result.Error
 }

@@ -1,8 +1,10 @@
-package service
+package admin
 
 import (
 	"awesomeProject/model"
+	"awesomeProject/model/admin"
 	"awesomeProject/serializer"
+	admin2 "awesomeProject/serializer/admin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -48,7 +50,7 @@ type UserDel struct {
 
 // 用户注册
 func (register *UserRegister) Register() serializer.Response {
-	u := model.User{
+	u := admin.User{
 		UserName: register.UserName,
 		Avatar:   register.Avatar,
 		Status:   register.Status,
@@ -63,7 +65,7 @@ func (register *UserRegister) Register() serializer.Response {
 	}
 
 	count := 0
-	model.DB.Model(&model.User{}).Where("user_name = ?", register.UserName).Count(&count)
+	model.DB.Model(&admin.User{}).Where("user_name = ?", register.UserName).Count(&count)
 	if count > 0 {
 		return serializer.Response{
 			Code: 0,
@@ -98,7 +100,7 @@ func (register *UserRegister) Register() serializer.Response {
 
 // 用户登陆
 func (login *UserLogin) Login(c *gin.Context) serializer.Response {
-	var u model.User
+	var u admin.User
 	if err := model.DB.Where("user_name = ?", login.UserName).First(&u).Error; err != nil {
 		return serializer.Response{
 			Code: 0,
@@ -133,9 +135,9 @@ func (list *UserList) GetUserList() serializer.Response {
 		list.Page = 1
 	}
 
-	var users []model.User
+	var users []admin.User
 	count := 0
-	model.DB.Model(&model.User{}).Count(&count)
+	model.DB.Model(&admin.User{}).Count(&count)
 	if err := model.DB.Where("user_name like ?", "%"+list.Key+"%").Offset((list.Page - 1) * perPage).Limit(perPage).Find(&users).Error; err != nil {
 		return serializer.Response{
 			Code: 0,
@@ -144,7 +146,7 @@ func (list *UserList) GetUserList() serializer.Response {
 	} else {
 		return serializer.Response{
 			Code: 1,
-			Data: serializer.BuildList(serializer.UserSerializer(users), count),
+			Data: serializer.BuildList(admin2.UserSerializer(users), count),
 			Msg:  "success",
 		}
 	}
@@ -152,7 +154,7 @@ func (list *UserList) GetUserList() serializer.Response {
 
 // 获取用户信息
 func GetUserInfo(id string) serializer.Response {
-	var u model.User
+	var u admin.User
 	if err := model.DB.First(&u, id).Error; err != nil {
 		return serializer.Response{
 			Code: 0,
@@ -194,7 +196,7 @@ func (edit *UserEdit) UserEdit() serializer.Response {
 	}
 
 	// 修改资料
-	if err := model.DB.Model(&model.User{}).Where("id = ?", edit.ID).Updates(update).Error; err == nil {
+	if err := model.DB.Model(&admin.User{}).Where("id = ?", edit.ID).Updates(update).Error; err == nil {
 		return serializer.Response{
 			Code: 1,
 			Msg:  "修改成功",
@@ -209,7 +211,7 @@ func (edit *UserEdit) UserEdit() serializer.Response {
 
 //用户删除
 func (del *UserDel) UserDel() serializer.Response {
-	var u model.User
+	var u admin.User
 	if err := model.DB.Where("id = ?", del.ID).Delete(&u).Error; err == nil {
 		return serializer.Response{
 			Code: 1,

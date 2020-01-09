@@ -1,7 +1,7 @@
-package serializer
+package admin
 
 import (
-	"awesomeProject/model"
+	"awesomeProject/model/admin"
 	"time"
 )
 
@@ -15,14 +15,14 @@ type UserList struct {
 }
 
 // 用户序列化
-func UserSerializer(items []model.User) []UserList {
+func UserSerializer(items []admin.User) []UserList {
 	list := []UserList{}
 	for _, item := range items {
 		user := UserList{
 			ID:        item.ID,
 			UserName:  item.UserName,
 			Avatar:    item.Avatar,
-			CreatedAt: time.Unix(item.CreatedAt.Unix(), 0).Format("2006-01-02 15:01:57"),
+			CreatedAt: time.Unix(item.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05"),
 			Status:    item.Status,
 		}
 		list = append(list, user)

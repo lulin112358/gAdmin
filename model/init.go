@@ -3,15 +3,15 @@ package model
 import (
 	"awesomeProject/util"
 	"github.com/jinzhu/gorm"
-	"time"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"time"
 )
 
 var DB *gorm.DB
 
 // 连接数据库
-func Database(connString string)  {
-	db, err :=gorm.Open("mysql", connString)
+func Database(connString string) {
+	db, err := gorm.Open("mysql", connString)
 	db.LogMode(true)
 
 	// Error
@@ -29,7 +29,4 @@ func Database(connString string)  {
 	db.DB().SetConnMaxLifetime(time.Second * 30)
 
 	DB = db
-
-	// 数据迁移
-	migration()
 }
