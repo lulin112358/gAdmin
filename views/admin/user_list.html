@@ -20,7 +20,7 @@
                             <div class="input-group">
                                 <input type="text" id="key" class="form-control" name="key" value="" placeholder="输入需查询的用户名称" />
                                 <span class="input-group-btn">
-                                    <button type="button" onclick="common.getList('/admin/user/list', {key: $('#key').val()})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                    <button type="button" onclick="common.getList('/admin/user/list', {key: $('#key').val(), page: 1})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                 </span>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
 </div>
 {{template "admin/_footer" . }}
 <script type="text/javascript">
-    common.getList("/admin/user/list")
+    common.getList("/admin/user/list", {page: 1})
 </script>
 </body>
 </html>

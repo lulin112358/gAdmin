@@ -62,5 +62,39 @@ func MenuStatus(c *gin.Context) {
 
 // 修改菜单排序
 func MenuSort(c *gin.Context) {
+	var service admin.MenuSortService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.MenuSort()
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusOK, serializer.Response{
+			Code:  0,
+			Msg:   "error",
+			Error: err.Error(),
+		})
+	}
+}
 
+// 修改菜单渲染
+func RenderMenuEdit(c *gin.Context) {
+	id := c.Param("id")
+	data := admin.MenuInfo(id)
+	c.HTML(http.StatusOK, "menu_edit.html", gin.H{
+		"data": data.Data,
+	})
+}
+
+// 修改菜单
+func MenuEdit(c *gin.Context) {
+	var service admin.MenuEditService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.MenuEdit()
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusOK, serializer.Response{
+			Code:  0,
+			Msg:   "err",
+			Error: err.Error(),
+		})
+	}
 }

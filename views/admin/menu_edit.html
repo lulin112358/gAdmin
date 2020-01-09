@@ -1,0 +1,79 @@
+{{ template "admin/_header" .}}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>编辑菜单</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" name="edit_rule" id="edit_rule" method="post" action="">
+                        <input type="hidden" name="id" value="{{.data.ID}}">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">菜单名称：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="title" type="text" class="form-control" name="title" required="" aria-required="true" value="{{.data.Title}}">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">节点：</label>
+                            <div class="input-group col-sm-4">
+                                <input type="text" name="name" id="name" value="{{.data.Name}}" placeholder="模块/控制器/方法"  class="form-control" />
+                                <span class="help-block m-b-none">如：admin/user/adduser </span>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">状&nbsp;态：</label>
+                            <div class="input-group col-sm-4">
+                                <div class="radio i-checks">
+                                    <input type="radio" name='status' value="1" {{if eq .data.Status 1}}checked{{end}}/>开启&nbsp;&nbsp;
+                                    <input type="radio" name='status' value="2" {{if eq .data.Status 2}}checked{{end}}/>关闭
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"> 排序：</label>
+                            <div class="input-group col-sm-5">
+                                <input type="text" name="sort" id="sort" value="{{.data.Sort}}" placeholder="输入排序"  class="form-control" />
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" id="save"><i class="fa fa-save"></i> 保存</button>&nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-danger" href="javascript:history.go(-1);"><i class="fa fa-close"></i> 返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "admin/_footer" . }}
+
+<script type="text/javascript">
+    $('#save').click(function () {
+        common.saveForm("/admin/menu/menu_edit", 'edit_rule')
+    })
+</script>
+</body>
+</html>
