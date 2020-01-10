@@ -12,7 +12,7 @@
                 <div class="col-sm-12">
                     <div  class="col-sm-2" style="width: 100px">
                         <div class="input-group" >
-                            <a href=""><button class="btn btn-outline btn-primary" type="button">添加角色</button></a>
+                            <a href="/admin/role/addpage"><button class="btn btn-outline btn-primary" type="button">添加角色</button></a>
                         </div>
                     </div>
                     <form name="admin_list_sea" class="form-search" method="post" action="">
@@ -20,7 +20,7 @@
                             <div class="input-group">
                                 <input type="text" id="key" class="form-control" name="key" value="" placeholder="输入需查询的角色名" />
                                 <span class="input-group-btn"> 
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button> 
+                                    <button type="button" onclick="common.getList('/admin/role/list', {page: 1, key: $('#key').val()})" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                 </span>
                             </div>
                         </div>
@@ -37,7 +37,6 @@
                         <tr class="long-tr">
                             <th>ID</th>
                             <th>角色名称</th>
-                            <th>状态</th>
                             <th width="15%">添加时间</th>
                             <th width="15%">更新时间</th>
                             <th width="25%">操作</th>
@@ -52,31 +51,20 @@
                         <tr class="long-td">
                             <td>{%item.id%}</td>
                             <td>{%item.title%}</td>
-                            <td>
-                                {%# if (item.id !== 1) { %}
-                                {%# if (item.status == 1) { %}
-                                <a href="javascript:;" onclick="">
-                                    <div id="zt"><span class="label label-info">开启</span></div>
-                                </a>
-                                {%# } else {%}
-                                <a href="javascript:;" onclick="">
-                                    <div id="zt"><span class="label label-danger">禁用</span></div>
-                                </a>
-                                {%# } %}
-                                {%# } %}
-                            </td>
                             <td>{%item.created_at%}</td>
                             <td>{%item.updated_at%}</td>
-                            {%# if (item.id !== 1) { %}
+
                             <td>
-                                <a href="javascript:;" onclick="giveQx({%d[i].id%})" class="btn btn-info btn-outline btn-xs">
+                                {%# if (item.id !== 1) { %}
+                                <a href="javascript:;" onclick="giveQx({%item.title%})" class="btn btn-info btn-outline btn-xs">
                                     <i class="fa fa-paste"></i> 权限分配</a>&nbsp;&nbsp;
-                                <a href="javascript:;" onclick="roleEdit({%item.id%})" class="btn btn-primary btn-outline btn-xs">
+                                <a href="javascript:;" onclick="" class="btn btn-primary btn-outline btn-xs">
                                     <i class="fa fa-paste"></i> 编辑</a>&nbsp;&nbsp;
-                                <a href="javascript:;" onclick="roleDel({%item.id%})" class="btn btn-danger btn-outline btn-xs">
+                                <a href="javascript:;" onclick="" class="btn btn-danger btn-outline btn-xs">
                                     <i class="fa fa-trash-o"></i> 删除</a>
+                                {%# }%}
                             </td>
-                            {%# }%}
+
                         </tr>
                         {%#  }); %}
 
@@ -120,46 +108,56 @@
     var index = '';
     var index2 = '';
     //分配权限
-    function giveQx(id){
-        $("#nodeid").val(id);
-        //加载层
-        index2 = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
-        //获取权限信息
-        $.getJSON('./giveAccess', {'type' : 'get', 'id' : id}, function(res){
-            layer.close(index2);
-            if(res.code == 1){
-                zNodes = JSON.parse(res.data);  //将字符串转换成obj
+    function giveQx(role){
+        layui.use(['layer'], function () {
+            var layer = layui.layer
+            $("#nodeid").val(id);
+            //加载层
+            index2 = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+            //获取权限信息
+            common.get("/admin/menu/menulist", {role: role}).then(res => {
+                layer.close(index2);
+                if(res.code == 1) {
+                    zNodes = buildList(res.data)
+                    console.log(zNodes)
+                    //页面层
+                    index = layer.open({
+                        type: 1,
+                        area:['350px', '80%'],
+                        title:'权限分配',
+                        skin: 'layui-layer-demo', //加上边框
+                        content: $('#role')
+                    });
 
-                //页面层
-                index = layer.open({
-                    type: 1,
-                    area:['350px', '80%'],
-                    title:'权限分配',
-                    skin: 'layui-layer-demo', //加上边框
-                    content: $('#role')
-                });
-
-                //设置zetree
-                var setting = {
-                    check:{
-                        enable:true
-                    },
-                    data: {
-                        simpleData: {
-                            enable: true
+                    //设置zetree
+                    var setting = {
+                        check:{
+                            enable:true
+                        },
+                        data: {
+                            simpleData: {
+                                enable: true
+                            }
                         }
-                    }
-                };
+                    };
 
-                $.fn.zTree.init($("#treeType"), setting, zNodes);
-                var zTree = $.fn.zTree.getZTreeObj("treeType");
-                zTree.expandAll(true);
+                    $.fn.zTree.init($("#treeType"), setting, zNodes);
+                    var zTree = $.fn.zTree.getZTreeObj("treeType");
+                    zTree.expandAll(true);
+                }else{
+                    layer.alert(res.msg);
+                }
+            })
+        })
+    }
 
-            }else{
-                layer.alert(res.msg);
-            }
-
-        });
+    // 构建列表
+    function buildList(items) {
+        var list = []
+        items.forEach(function (item, index) {
+            list[index] = {id: item.id, pId: item.pid, name: item.title}
+        })
+        return list
     }
 
     //确认分配权限

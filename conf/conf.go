@@ -2,6 +2,7 @@ package conf
 
 import (
 	"awesomeProject/catch"
+	"awesomeProject/middleware"
 	"awesomeProject/migration"
 	"awesomeProject/model"
 	"awesomeProject/util"
@@ -24,4 +25,7 @@ func Init() {
 
 	// Redis
 	catch.Redis()
+
+	// 初始化权限认证模块
+	middleware.Init()
 }

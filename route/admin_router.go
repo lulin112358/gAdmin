@@ -64,6 +64,9 @@ func AdminRouter(r *gin.Engine) {
 			// 菜单列表渲染
 			auth.GET("index/menu_list", admin.RenderMenuList)
 
+			// 菜单列表
+			auth.GET("menu/menulist", admin.MenuList)
+
 			// 添加菜单
 			auth.POST("menu/menu_add", admin.MenuAdd)
 
@@ -87,6 +90,12 @@ func AdminRouter(r *gin.Engine) {
 
 			// 获取角色列表
 			auth.GET("role/list", admin.RolesList)
+
+			// 角色添加列表
+			auth.GET("role/addpage", admin.RenderRoleAdd)
+
+			// 角色添加
+			auth.POST("role/add", admin.RoleAdd)
 		}
 	}
 }

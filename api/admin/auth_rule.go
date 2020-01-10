@@ -15,6 +15,12 @@ func RenderMenuList(c *gin.Context) {
 	})
 }
 
+// 获取所有菜单列表
+func MenuList(c *gin.Context) {
+	list := admin.MenuList()
+	c.JSON(http.StatusOK, list)
+}
+
 // 添加菜单
 func MenuAdd(c *gin.Context) {
 	var service admin.MenuAddService

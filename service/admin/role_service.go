@@ -15,6 +15,11 @@ type RoleListService struct {
 	Key  string `form:"key" json:"key"`
 }
 
+// 角色添加字段
+type RoleAddService struct {
+	Title string `form:"title" json:"title" binding:"required"`
+}
+
 // 获取角色列表
 func (s *RoleListService) RolesList() serializer.Response {
 	perPage, _ := strconv.Atoi(os.Getenv("PER_PAGE"))
@@ -36,6 +41,27 @@ func (s *RoleListService) RolesList() serializer.Response {
 		return serializer.Response{
 			Code:  0,
 			Msg:   "error",
+			Error: err.Error(),
+		}
+	}
+}
+
+// 角色添加
+func (s *RoleAddService) RoleAdd() serializer.Response {
+	role := admin.AuthGroup{
+		Title:  s.Title,
+		Status: 1,
+	}
+
+	if err := model.DB.Create(&role).Error; err == nil {
+		return serializer.Response{
+			Code: 1,
+			Msg:  "添加成功",
+		}
+	} else {
+		return serializer.Response{
+			Code:  0,
+			Msg:   "添加失败",
 			Error: err.Error(),
 		}
 	}
