@@ -1,0 +1,192 @@
+{{ template "admin/_header" .}}
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- Panel Other -->
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>角色列表</h5>
+        </div>
+        <div class="ibox-content">
+            <!--搜索框开始-->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div  class="col-sm-2" style="width: 100px">
+                        <div class="input-group" >
+                            <a href=""><button class="btn btn-outline btn-primary" type="button">添加角色</button></a>
+                        </div>
+                    </div>
+                    <form name="admin_list_sea" class="form-search" method="post" action="">
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" id="key" class="form-control" name="key" value="" placeholder="输入需查询的角色名" />
+                                <span class="input-group-btn"> 
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button> 
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--搜索框结束-->
+            <div class="hr-line-dashed"></div>
+
+            <div class="example-wrap">
+                <div class="example">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="long-tr">
+                            <th>ID</th>
+                            <th>角色名称</th>
+                            <th>状态</th>
+                            <th width="15%">添加时间</th>
+                            <th width="15%">更新时间</th>
+                            <th width="25%">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="view"></tbody>
+                    </table>
+
+                    <script id="tpl" type="text/html">
+
+                        {%# layui.each(d.items, function(index, item) { %}
+                        <tr class="long-td">
+                            <td>{%item.id%}</td>
+                            <td>{%item.title%}</td>
+                            <td>
+                                {%# if (item.id !== 1) { %}
+                                {%# if (item.status == 1) { %}
+                                <a href="javascript:;" onclick="">
+                                    <div id="zt"><span class="label label-info">开启</span></div>
+                                </a>
+                                {%# } else {%}
+                                <a href="javascript:;" onclick="">
+                                    <div id="zt"><span class="label label-danger">禁用</span></div>
+                                </a>
+                                {%# } %}
+                                {%# } %}
+                            </td>
+                            <td>{%item.created_at%}</td>
+                            <td>{%item.updated_at%}</td>
+                            {%# if (item.id !== 1) { %}
+                            <td>
+                                <a href="javascript:;" onclick="giveQx({%d[i].id%})" class="btn btn-info btn-outline btn-xs">
+                                    <i class="fa fa-paste"></i> 权限分配</a>&nbsp;&nbsp;
+                                <a href="javascript:;" onclick="roleEdit({%item.id%})" class="btn btn-primary btn-outline btn-xs">
+                                    <i class="fa fa-paste"></i> 编辑</a>&nbsp;&nbsp;
+                                <a href="javascript:;" onclick="roleDel({%item.id%})" class="btn btn-danger btn-outline btn-xs">
+                                    <i class="fa fa-trash-o"></i> 删除</a>
+                            </td>
+                            {%# }%}
+                        </tr>
+                        {%#  }); %}
+
+                    </script>
+                    
+                    <div id="AjaxPage" style=" text-align: right;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 角色分配 -->
+<div class="zTreeDemoBackground left" style="display: none" id="role">
+    <input type="hidden" id="nodeid">
+    <div class="form-group">
+        <div class="col-sm-5 col-sm-offset-2">
+            <ul id="treeType" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-4" style="margin-bottom: 15px">
+            <input type="button" value="确认分配" class="btn btn-primary" id="postform"/>
+        </div>
+    </div>
+</div>
+
+
+{{template "admin/_footer" . }}
+
+<link rel="stylesheet" href="/static/js/plugins/zTree/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="/static/js/plugins/zTree/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="/static/js/plugins/zTree/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="/static/js/plugins/zTree/jquery.ztree.exedit-3.5.js"></script>
+
+<script type="text/javascript">
+
+    common.getList("/admin/role/list", {page: 1})
+
+    zNodes = '';
+    var index = '';
+    var index2 = '';
+    //分配权限
+    function giveQx(id){
+        $("#nodeid").val(id);
+        //加载层
+        index2 = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+        //获取权限信息
+        $.getJSON('./giveAccess', {'type' : 'get', 'id' : id}, function(res){
+            layer.close(index2);
+            if(res.code == 1){
+                zNodes = JSON.parse(res.data);  //将字符串转换成obj
+
+                //页面层
+                index = layer.open({
+                    type: 1,
+                    area:['350px', '80%'],
+                    title:'权限分配',
+                    skin: 'layui-layer-demo', //加上边框
+                    content: $('#role')
+                });
+
+                //设置zetree
+                var setting = {
+                    check:{
+                        enable:true
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    }
+                };
+
+                $.fn.zTree.init($("#treeType"), setting, zNodes);
+                var zTree = $.fn.zTree.getZTreeObj("treeType");
+                zTree.expandAll(true);
+
+            }else{
+                layer.alert(res.msg);
+            }
+
+        });
+    }
+
+    //确认分配权限
+    $("#postform").click(function(){
+        var zTree = $.fn.zTree.getZTreeObj("treeType");
+        var nodes = zTree.getCheckedNodes(true);
+        var NodeString = '';
+        $.each(nodes, function (n, value) {
+            if(n>0){
+                NodeString += ',';
+            }
+            NodeString += value.id;
+        });
+        var id = $("#nodeid").val();
+        //写入库
+        $.post('./giveAccess', {'type' : 'give', 'id' : id, 'rule' : NodeString}, function(res){
+            layer.close(index);
+            if(res.code == 1){
+                layer.msg(res.msg,{icon:1,time:1500,shade: 0.1}, function(){
+                    Ajaxpage(1,5)
+                });
+            }else{
+                layer.msg(res.msg);
+            }
+
+        }, 'json')
+    })
+</script>
+</body>
+</html>

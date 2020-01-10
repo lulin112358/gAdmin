@@ -78,7 +78,7 @@ var common = {
     },
 
 
-    getList(url, params = {page:1}) {
+    getList(url, params) {
         layui.use(['laytpl', 'laypage'], function () {
             var laytpl = layui.laytpl
             var laypage = layui.laypage
@@ -94,6 +94,7 @@ var common = {
                 data: params,
                 dataType: "json",
                 success(res) {
+                    console.log(res)
                     var data = res.data
                     var getTpl = tpl.innerHTML
                         ,view = document.getElementById('view');
@@ -158,6 +159,10 @@ var common = {
                     if(is_redirect) {
                         setTimeout(function () {
                             window.history.go(-1)
+                        }, 1500)
+                    }else {
+                        setTimeout(function () {
+                            window.location.reload()
                         }, 1500)
                     }
                 }else {

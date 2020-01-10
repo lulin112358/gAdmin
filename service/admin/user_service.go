@@ -137,7 +137,7 @@ func (list *UserList) GetUserList() serializer.Response {
 
 	var users []admin.User
 	count := 0
-	model.DB.Model(&admin.User{}).Count(&count)
+	model.DB.Where("user_name like ?", "%"+list.Key+"%").Offset((list.Page - 1) * perPage).Limit(perPage).Find(&users).Count(&count)
 	if err := model.DB.Where("user_name like ?", "%"+list.Key+"%").Offset((list.Page - 1) * perPage).Limit(perPage).Find(&users).Error; err != nil {
 		return serializer.Response{
 			Code: 0,

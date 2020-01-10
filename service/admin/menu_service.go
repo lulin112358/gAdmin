@@ -33,6 +33,15 @@ type MenuSortService struct {
 	Sort int  `form:"sort" json:"sort" binding:"required"`
 }
 
+// 修改菜单信息字段
+type MenuEditService struct {
+	ID     uint   `form:"id" json:"id" binding:"required"`
+	Title  string `form:"title" json:"title" binding:"required"`
+	Name   string `form:"name" json:"name" binding:"required"`
+	Status int    `form:"status" json:"status" binding:"required"`
+	Sort   int    `form:"sort" json:"sort" binding:"required"`
+}
+
 // 菜单列表
 func MenuList() serializer.Response {
 	var rules []admin.AuthRule
@@ -108,6 +117,61 @@ func (s *MenuStatusService) MenuStatus() serializer.Response {
 		return serializer.Response{
 			Code:  0,
 			Msg:   "修改失败",
+			Error: err.Error(),
+		}
+	}
+}
+
+// 修改菜单排序
+func (s *MenuSortService) MenuSort() serializer.Response {
+	if err := model.DB.Model(&admin.AuthRule{}).Where("id = ?", s.ID).Update("sort", s.Sort).Error; err == nil {
+		return serializer.Response{
+			Code: 1,
+			Msg:  "修改成功",
+		}
+	} else {
+		return serializer.Response{
+			Code:  0,
+			Msg:   "修改失败",
+			Error: err.Error(),
+		}
+	}
+}
+
+// 获取菜单信息
+func MenuInfo(id string) serializer.Response {
+	var menu admin.AuthRule
+	if err := model.DB.First(&menu, id).Error; err == nil {
+		return serializer.Response{
+			Code: 1,
+			Data: menu,
+		}
+	} else {
+		return serializer.Response{
+			Code: 0,
+			Data: nil,
+		}
+	}
+}
+
+// 修改菜单信息
+func (s *MenuEditService) MenuEdit() serializer.Response {
+	menu := admin.AuthRule{
+		Name:   s.Name,
+		Title:  s.Title,
+		Status: s.Status,
+		Sort:   s.Sort,
+	}
+
+	if err := model.DB.Model(&admin.AuthRule{}).Where("id = ?", s.ID).Updates(menu).Error; err == nil {
+		return serializer.Response{
+			Code: 1,
+			Msg:  "更新成功",
+		}
+	} else {
+		return serializer.Response{
+			Code:  0,
+			Msg:   "更新失败",
 			Error: err.Error(),
 		}
 	}

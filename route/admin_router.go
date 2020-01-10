@@ -72,6 +72,21 @@ func AdminRouter(r *gin.Engine) {
 
 			// 修改菜单状态
 			auth.POST("menu/menu_status", admin.MenuStatus)
+
+			// 菜单排序
+			auth.POST("menu/menu_sort", admin.MenuSort)
+
+			// 修改菜单渲染
+			auth.GET("menu/editpage/:id", admin.RenderMenuEdit)
+
+			// 修改菜单
+			auth.POST("menu/menu_edit", admin.MenuEdit)
+
+			// 角色列表渲染
+			auth.GET("role/listpage", admin.RenderRoleList)
+
+			// 获取角色列表
+			auth.GET("role/list", admin.RolesList)
 		}
 	}
 }
