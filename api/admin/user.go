@@ -27,9 +27,9 @@ func RenderLogin(c *gin.Context) {
 	s := sessions.Default(c)
 	uid := s.Get("user_id")
 	if uid != nil {
-		c.Redirect(302, "/api/index/index")
-	} else {
 		c.HTML(http.StatusOK, "login.html", gin.H{})
+	} else {
+		c.Redirect(302, "/admin/index/index")
 	}
 }
 
